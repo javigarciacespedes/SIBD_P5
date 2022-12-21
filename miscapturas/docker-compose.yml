@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  mongoDB_Javier:
+    image: mongo
+	container_name: mongodb_Javier
+		ports:
+			- 27017:27017
+		restart: unless-stopped
+		networks:
+      ODM:
+        ipv4_address: 172.10.0.2
+    command: ["mongod"]
+	node_Javier:
+		image: node
+		ports:
+      		- 8001:8001
+    build: .
+    environment:
+      MONGO_IP: ${MONGO_IP}
+    networks:
+      ODM:
+        ipv4_address: 172.10.0.3
+    command: ["npm", "install"]
+    command: ["npm", "run", "seed"]
+    command: ["npm","start"]
+networks:
+  ODM:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.0.0/24
+          gateway: 172.10.0.1
+
+
